@@ -48,7 +48,7 @@ public class ContaCorrenteTest  {
     @Test
 	public void testANewCheckBookHasAZeroBallanceByDefault() {
 //        conta = new ContaCorrente("123", 20.1);
-        assertEquals(0, conta.getSaldo());
+        assertEquals(0, conta.getSaldo(), 2);
 	}
 
     /*
@@ -60,7 +60,7 @@ public class ContaCorrenteTest  {
 	public void testSingleDepositoIncreasesBalance() throws OperacaoIlegalException {
 		conta.creditar(new Deposito("2009-10-12", 10000));
 
-		assertEquals(10000, conta.getSaldo());
+		assertEquals(10000, conta.getSaldo(), 2);
 	}
 
     /*
@@ -68,12 +68,12 @@ public class ContaCorrenteTest  {
      */
 
     @Test
-	public void testMultipleDepositos() {
+	public void testMultipleDepositos() throws OperacaoIlegalException {
 		conta.creditar(new Deposito("2009-10-12", 100));
 		conta.creditar(new Deposito("2009-10-13", 200));
 		conta.creditar(new Deposito("2009-10-14", 300));
 
-		assertEquals(600, conta.getSaldo());
+		assertEquals(600, conta.getSaldo(), 2);
 	}
 
     /*
@@ -88,7 +88,7 @@ public class ContaCorrenteTest  {
 	public void testCreatecontaWithInitialBalance() {
 		ContaCorrente conta = new ContaCorrente(10000);
 
-		assertEquals(10000, conta.getSaldo());
+		assertEquals(10000, conta.getSaldo(), 2);
 	}
 
     /*
@@ -105,8 +105,8 @@ public class ContaCorrenteTest  {
 	public void testExtrato() {
 		String extrato_esperado =
 			"Conta de null\n" +
-			"Saldo Inicial R$ 0\n" +
-			"Saldo Final R$ 0\n" +
+			"Saldo Inicial R$ 0,00\n" +
+			"Saldo Final R$ 0,00\n" +
 			"Nenhuma trasacao realizada\n";
 
 		String extrato_real = conta.extrato();
@@ -123,8 +123,8 @@ public class ContaCorrenteTest  {
 		ContaCorrente conta = new ContaCorrente("James Grenning");
 		String expected =
 	"Conta de James Grenning\n" +
-	"Saldo Inicial R$ 0\n" +
-	"Saldo Final R$ 0\n" +
+	"Saldo Inicial R$ 0,00\n" +
+	"Saldo Final R$ 0,00\n" +
 	"Nenhuma trasacao realizada\n";
 
 		String extrato = conta.extrato();
@@ -138,11 +138,11 @@ public class ContaCorrenteTest  {
 
 	@Test
 	public void testProduceextratoWithDifferentStartigBalancen() {
-		ContaCorrente conta = new ContaCorrente("Your Name", 10000);
+		ContaCorrente conta = new ContaCorrente("George", 10000);
 		String expected =
-			"Conta de Your Name\n" +
-			"Saldo Inicial R$ 10000\n" +
-			"Saldo Final R$ 10000\n" +
+			"Conta de George\n" +
+			"Saldo Inicial R$ 10000,00\n" +
+			"Saldo Final R$ 10000,00\n" +
 			"Nenhuma trasacao realizada\n";
 		String extrato = conta.extrato();
 
@@ -156,14 +156,14 @@ public class ContaCorrenteTest  {
      */
 
 	@Test
-	public void testProduceextratoWithOneDeposito() {
+	public void testProduceextratoWithOneDeposito() throws OperacaoIlegalException {
 		ContaCorrente conta = new ContaCorrente("James Grenning", 0);
 
 		String expected =
 				"Conta de James Grenning\n" +
-				"Saldo Inicial R$ 0\n" +
-				"Saldo Final R$ 10000\n" +
-				"2015-03-13\tDeposito\tR$ 10000\n";
+				"Saldo Inicial R$ 0,00\n" +
+				"Saldo Final R$ 10000,00\n" +
+				"2015-03-13\tDeposito\tR$ 10000,00\n";
 
 		conta.creditar(new Deposito("2015-03-13", 10000));
 
@@ -186,16 +186,16 @@ public class ContaCorrenteTest  {
      */
 
 	@Test
-	public void testProduceextratoWithMultipleDeposito() {
+	public void testProduceextratoWithMultipleDeposito() throws OperacaoIlegalException {
 		ContaCorrente conta = new ContaCorrente("James Grenning", 0);
 
 		String expected =
 			"Conta de James Grenning\n" +
-			"Saldo Inicial R$ 0\n" +
-			"Saldo Final R$ 60000\n" +
-			"2015-03-11\tDeposito\tR$ 10000\n"+
-			"2015-03-12\tDeposito\tR$ 20000\n"+
-			"2015-03-13\tDeposito\tR$ 30000\n";
+			"Saldo Inicial R$ 0,00\n" +
+			"Saldo Final R$ 60000,00\n" +
+			"2015-03-11\tDeposito\tR$ 10000,00\n"+
+			"2015-03-12\tDeposito\tR$ 20000,00\n"+
+			"2015-03-13\tDeposito\tR$ 30000,00\n";
 
 			conta.creditar(new Deposito("2015-03-11", 10000));
 			conta.creditar(new Deposito("2015-03-12", 20000));
@@ -210,5 +210,56 @@ public class ContaCorrenteTest  {
      * Agora se quiser continue a implementar outros métodos pra esta classe
      * seguindo o fluxo TDD.
      */
+
+	@Test
+	public void testTransferirEntreContas() throws OperacaoIlegalException {
+		ContaCorrente contaPrincipal = new ContaCorrente("João", 0);
+		ContaCorrente contaDestino = new ContaCorrente("Carlos", 0);
+
+		String expected =
+				"Conta de João\n" +
+						"Saldo Inicial R$ 0,00\n" +
+						"Saldo Final R$ 2000,00\n" +
+						"2015-03-14\tDeposito\tR$ 3000,00\n"+
+						"2015-03-14\tRetirada\tR$ 1000,00\n";
+
+		contaPrincipal.creditar(new Deposito("2015-03-14", 3000));
+
+		contaPrincipal.transferir(contaDestino, 1000);
+
+		assertEquals(2000, contaPrincipal.getSaldo(), 2);
+		assertEquals(1000, contaDestino.getSaldo(), 2);
+		assertEquals(expected, contaPrincipal.extrato());
+	}
+
+	@Test
+	public void testTransferirEntreContasException() {
+		ContaCorrente contaPrincipal = new ContaCorrente("João", 0);
+		ContaCorrente contaDestino = new ContaCorrente("Carlos", 0);
+
+		String expected =
+				"Conta de João\n" +
+						"Saldo Inicial R$ 0,00\n" +
+						"Saldo Final R$ 2000,00\n" +
+						"2015-03-14\tDeposito\tR$ 3000,00\n"+
+						"2015-03-14\tRetirada\tR$ 1000,00\n";
+
+//		contaPrincipal.creditar(new Deposito("2015-03-15", -100));
+		try {
+			contaPrincipal.creditar(new Deposito("2015-03-14", 3000));
+
+			contaPrincipal.transferir(contaDestino, 3500);
+
+			assertEquals(2000, contaPrincipal.getSaldo());
+			assertEquals(1000, contaDestino.getSaldo());
+			assertEquals(expected, contaPrincipal.extrato());
+
+			fail("Não deve ser possivel sacar além do saldo!");
+		} catch (OperacaoIlegalException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 
 }

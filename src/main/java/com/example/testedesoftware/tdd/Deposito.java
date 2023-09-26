@@ -3,14 +3,14 @@ package com.example.testedesoftware.tdd;
 public class Deposito {
 
     String data = "Undefined";
-    int valor = -1;
+    double valor = -1;
 
-    public Deposito(String data, int valor) {
+    public Deposito(String data, double valor) {
         this.data = data;
         this.valor = valor;
     }
 
-    public int valor() {
+    public double valor() {
         return valor;
     }
 

@@ -1,6 +1,6 @@
 package com.example.testedesoftware.tdd;
 
-import com.example.testedesoftware.banco.Conta;
+import com.example.testedesoftware.banco.OperacaoIlegalException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.List;
 public class ContaCorrente {
     private String id;
     private String nome;
-    private int saldo;
-    private List<Deposito> historico = new ArrayList<>();
+    private double saldo;
+    private List<Historico> historico = new ArrayList<>();
 
     public ContaCorrente() {
     }
 
-    public ContaCorrente(int valor) {
+    public ContaCorrente(double valor) {
         this.saldo = valor;
     }
 
@@ -22,24 +22,39 @@ public class ContaCorrente {
         this.nome = nome;
     }
 
-    public ContaCorrente (String nome, int saldo) {
+    public ContaCorrente (String nome, double saldo) {
         this.saldo = saldo;
         this.nome = nome;
-        historico.add(new Deposito("", saldo));
+        historico.add(new Historico("", "Deposito", saldo));
     }
 
-    public void creditar(Deposito deposito) {
-        historico.add(deposito);
+    public void creditar(Deposito deposito) throws OperacaoIlegalException {
+        if (deposito.valor() < 0) throw new OperacaoIlegalException();
+
+        historico.add((new Historico(deposito.data(), "Deposito", deposito.valor())));
         setSaldo((getSaldo()+deposito.valor()));
+    }
+
+    public double debitar(Deposito debito) throws OperacaoIlegalException {
+        if (debito.valor() > getSaldo() || debito.valor() <= 0) throw new OperacaoIlegalException();
+
+        historico.add((new Historico(debito.data(), "Retirada", debito.valor())));
+        setSaldo((getSaldo()-debito.valor()));
+        return getSaldo();
+    }
+
+    public void transferir (ContaCorrente destino, double valor) throws OperacaoIlegalException {
+        debitar(new Deposito("2015-03-14", valor));
+        destino.creditar(new Deposito("2015-03-14", valor));
     }
 
     public String extrato() {
         return String.format("Conta de %s\n" +
-                "Saldo Inicial R$ %d\n" +
-                "Saldo Final R$ %d\n" +
+                "Saldo Inicial R$ %.2f\n" +
+                "Saldo Final R$ %.2f\n" +
                 "%s",
                 getNome(),
-                historico.isEmpty() ? 0 : historico.get(0).valor(),
+                historico.isEmpty() ? 0 : historico.get(0).getValor(),
                 getSaldo(),
                 getHistorico()
         );
@@ -63,11 +78,11 @@ public class ContaCorrente {
         this.id = id;
     }
 
-    public int getSaldo() {
+    public double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(int saldo) {
+    public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
