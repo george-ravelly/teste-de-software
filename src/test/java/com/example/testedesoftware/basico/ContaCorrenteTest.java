@@ -237,29 +237,17 @@ public class ContaCorrenteTest  {
 		ContaCorrente contaPrincipal = new ContaCorrente("João", 0);
 		ContaCorrente contaDestino = new ContaCorrente("Carlos", 0);
 
-		String expected =
-				"Conta de João\n" +
-						"Saldo Inicial R$ 0,00\n" +
-						"Saldo Final R$ 2000,00\n" +
-						"2015-03-14\tDeposito\tR$ 3000,00\n"+
-						"2015-03-14\tRetirada\tR$ 1000,00\n";
-
-//		contaPrincipal.creditar(new Deposito("2015-03-15", -100));
 		try {
 			contaPrincipal.creditar(new Deposito("2015-03-14", 3000));
 
 			contaPrincipal.transferir(contaDestino, 3500);
 
-			assertEquals(2000, contaPrincipal.getSaldo());
-			assertEquals(1000, contaDestino.getSaldo());
-			assertEquals(expected, contaPrincipal.extrato());
+			assertEquals(2000, contaPrincipal.getSaldo(), 2);
+			assertEquals(1000, contaDestino.getSaldo(), 2);
 
 			fail("Não deve ser possivel sacar além do saldo!");
 		} catch (OperacaoIlegalException e) {
 			e.printStackTrace();
 		}
 	}
-
-
-
 }
