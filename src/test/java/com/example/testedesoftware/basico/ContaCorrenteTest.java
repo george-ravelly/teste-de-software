@@ -1,8 +1,8 @@
 package com.example.testedesoftware.basico;
 
 import com.example.testedesoftware.banco.OperacaoIlegalException;
-import com.example.testedesoftware.tdd.ContaCorrente;
-import com.example.testedesoftware.tdd.Deposito;
+import com.example.testedesoftware.banco.tdd.ContaCorrente;
+import com.example.testedesoftware.banco.tdd.Deposito;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -122,10 +122,10 @@ public class ContaCorrenteTest  {
 	public void testProduceextratoWithDifferentHolder() {
 		ContaCorrente conta = new ContaCorrente("James Grenning");
 		String expected =
-	"Conta de James Grenning\n" +
-	"Saldo Inicial R$ 0,00\n" +
-	"Saldo Final R$ 0,00\n" +
-	"Nenhuma trasacao realizada\n";
+			"Conta de James Grenning\n" +
+			"Saldo Inicial R$ 0,00\n" +
+			"Saldo Final R$ 0,00\n" +
+			"Nenhuma trasacao realizada\n";
 
 		String extrato = conta.extrato();
 

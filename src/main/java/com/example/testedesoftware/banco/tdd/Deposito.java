@@ -1,4 +1,4 @@
-package com.example.testedesoftware.tdd;
+package com.example.testedesoftware.banco.tdd;
 
 public class Deposito {
 

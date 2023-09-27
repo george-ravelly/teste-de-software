@@ -1,6 +1,6 @@
 package com.example.testedesoftware.basico;
 
-import com.example.testedesoftware.tdd.Deposito;
+import com.example.testedesoftware.banco.tdd.Deposito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

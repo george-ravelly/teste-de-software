@@ -1,4 +1,4 @@
-package com.example.testedesoftware.tdd;
+package com.example.testedesoftware.banco.tdd;
 
 import com.example.testedesoftware.banco.OperacaoIlegalException;
 
